@@ -1,0 +1,52 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="bower_components/iron-icon/iron-icon.html">
+
+<dom-module id="portfolio-form">
+  <style>
+    .portfolio-display {
+      background: #333;
+    }
+    .field {
+      margin-bottom: 12px;
+    }  
+  </style>
+  <template>
+    <form on-submit="validatePortfolio">
+      <div class="portfolio-display">
+        <div class="field">
+          <label for="name">Name:</label>
+          <input type="text" maxlength="100" value="{{portfolio.name}}" />
+        </div>
+        <div class="field">
+          <label for="name">Description:</label>
+          <input type="text" maxlength="100" value="{{portfolio.description}}" />
+        </div>
+        <h3>Enter your stock symbols below</h3>
+        <div class="field">
+            <input type="text" value="{{newStock.symbol}}" maxlength="50"><core-icon icon="add" on-click="addStockSymbol"></core-icon>
+        </div>        
+        <template repeat="{{stock in portfolio.stocks}}">
+          <div class="field">
+            <h5>{{stock.symbol}}</h5>          
+          </div>
+        </template>
+        <button type="submit">Create</button>
+      </div>
+    </form>
+  </template>
+  <script type="application/javascript" src="js/stock_portfolio.js"></script>
+  <script type="application/javascript">
+  Polymer({
+    is: 'portfolio-form',
+    properties: {
+      
+    },
+    ready: function() {
+    },
+    addStockSymbol: function(e,detail) {
+      
+    }    
+  });
+  </script>
+</dom-module>
