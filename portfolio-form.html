@@ -1,6 +1,8 @@
 <link rel="import" href="bower_components/polymer/polymer.html">
 <link rel="import" href="bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="stock-portfolio.html">
+<link rel="import" href="stock.html">
 
 <dom-module id="portfolio-form">
   <style>
@@ -35,7 +37,6 @@
       </div>
     </form>
   </template>
-  <script type="application/javascript" src="js/stock_portfolio.js"></script>
   <script type="application/javascript">
   Polymer({
     is: 'portfolio-form',
@@ -45,8 +46,11 @@
     ready: function() {
     },
     addStockSymbol: function(e,detail) {
-      
-    }    
+      console.log('hello');
+    },
+    validatePortfolio: function(obj) {
+      this.fire('validportfolio', {'portfolio': obj});
+    }
   });
   </script>
 </dom-module>
