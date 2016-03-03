@@ -1,39 +1,52 @@
 <link rel="import" href="bower_components/polymer/polymer.html">
 <link rel="import" href="bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="bower_components/iron-input/iron-input.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
 <link rel="import" href="stock-portfolio.html">
 <link rel="import" href="stock.html">
 
 <dom-module id="portfolio-form">
   <style>
     .portfolio-display {
-      background: #333;
+      @apply(--layout-flex);
+      @apply(--layout-vertical);
+      background-color: lightgrey;
     }
     .field {
       margin-bottom: 12px;
     }  
+    .buttonfield {
+      @apply(--layout-horizontal);
+    }
+    .submit-button {
+      background-color: lightblue;
+    }
   </style>
   <template>
     <form on-submit="validatePortfolio">
       <div class="portfolio-display">
         <div class="field">
           <label for="name">Name:</label>
-          <input type="text" maxlength="100" value="{{portfolio.name}}" />
+          <input is="iron-input" type="text" maxlength="100" bind-value="{{portfolio.name}}" />
         </div>
         <div class="field">
           <label for="name">Description:</label>
-          <input type="text" maxlength="100" value="{{portfolio.description}}" />
+          <input is="iron-input" type="text" maxlength="100" bind-value="{{portfolio.description}}" />
         </div>
         <h3>Enter your stock symbols below</h3>
         <div class="field">
-            <input type="text" value="{{newStock.symbol}}" maxlength="50"><core-icon icon="add" on-click="addStockSymbol"></core-icon>
+            <input is="iron-input" type="text" bind-value="{{newStock.symbol}}" maxlength="50"><iron-icon icon="add" on-click="addStockSymbol"></iron-icon>
         </div>        
-        <template repeat="{{stock in portfolio.stocks}}">
-          <div class="field">
-            <h5>{{stock.symbol}}</h5>          
-          </div>
+        <ul>
+        <template is="dom-repeat" items="{{portfolio.stocks}}">
+            <li>{{item.symbol}}</li>          
         </template>
-        <button type="submit">Create</button>
+        </ul>
+        <div class="buttonfield">
+          <paper-button class="submit-button" raised on-click="validatePortfolio">Create</paper-button>
+        </div>
       </div>
     </form>
   </template>
@@ -41,15 +54,23 @@
   Polymer({
     is: 'portfolio-form',
     properties: {
-      
+      newStock: Object,
+      portfolio: Object
     },
     ready: function() {
+      this.stocks = [];
+      this.newStock  = new Stock();
+      this.portfolio = new StockPortfolio();
     },
     addStockSymbol: function(e,detail) {
-      console.log('hello');
+      this.portfolio.addNewStock(this.newStock);
+      this.newStock = new Stock();
+      this.notifyPath('portfolio.stocks', this.portfolio.stocks.slice());
     },
     validatePortfolio: function(obj) {
-      this.fire('validportfolio', {'portfolio': obj});
+      this.fire('validportfolio', {'portfolio': this.portfolio});
+      this.newStock = new Stock();
+      this.portfolio = new StockPortfolio();
     }
   });
   </script>

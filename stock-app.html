@@ -4,6 +4,7 @@
 <link rel="import" href="bower_components/paper-button/paper-button.html">
 <link rel="import" href="bower_components/paper-toolbar/paper-toolbar.html">
 <link rel="import" href="bower_components/paper-header-panel/paper-header-panel.html">
+<link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="portfolio-form.html">
 <link rel="import" href="stock-portfolio.html">
 <link rel="import" href="portfolio-element.html">
@@ -13,6 +14,9 @@
     <style>
       paper-header-panel {
         height: 100%; 
+        @apply(--layout-flex-auto);
+        @apply(--layout-vertical);
+        @apply(--layout-fullbleed);
       }
       .menu-bar {
         background-color: lightblue;
@@ -21,20 +25,22 @@
         margin: 5px;
       }
     </style>
-     <paper-header-panel flex>
-       <paper-toolbar class="menu-bar">
+    <paper-header-panel>
+       <paper-toolbar class="paper-header">
           <iron-icon icon="home" on-click="showPortfolioList"></iron-icon>
           <paper-button class="smaller" on-click="addNewPortfolio">
             <iron-icon icon="add"></iron-icon>
             New Portfolio
           </paper-button>
        </paper-toolbar>
-       <template if="{{addPortfolio}}">
-         <portfolio-form class="component" on-validportfolio="updatePortfolioList"></portfolio-form>
+       <template is="dom-if" if="{{addPortfolio}}">
+          <div class="fit">
+            <portfolio-form on-validportfolio="updatePortfolioList"></portfolio-form>
+          </div>
        </template>
-       <template if="{{!addPortfolio}}">
-          <template repeat="{{portfolio in portfolios}}">
-            <portfolio-element portfolio="{{portfolio}}"></portfolio-element>
+       <template is="dom-if" if="{{!addPortfolio}}">
+          <template is="dom-repeat" items="{{portfolios}}">
+            <portfolio-element portfolio="{{item}}"></portfolio-element>
           </template>
        </template>
      </paper-header-panel>
@@ -42,9 +48,6 @@
   <script type="application/javascript">
   Polymer({
     is: "stock-app",
-    observers: [
-      'addNewPortfolio()'
-    ],
     ready: function() {
       this.addPortfolio = false;
       this.portfolios = [];
@@ -52,10 +55,14 @@
     addNewPortfolio: function() {
       this.addPortfolio = true;
     },
-    updatePortfolioList: function(obj, pfolio) {
-      console.log(pfolio);
-      this.portfolios.push(pfolio);
+    updatePortfolioList: function(e, detail) {
+      this.portfolios.push(detail.portfolio);
+      this.notifyPath('portfolios', this.portfolios.slice());
+      this.addPortfolio = false;
     },
+    showPortfolioList: function() {
+      this.addPortfolio = false;
+    }
   });
   </script>
 </dom-module>

@@ -1,9 +1,11 @@
 <link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="stock-portfolio.html">
+<link rel="import" href="stock.html">
 
 <dom-module name="portfolio-element">
   <style>
   .portfolio-display {
-    background: #555;
+    background: lightgrey;
     margin: 5px;
   }
   .field {
@@ -17,10 +19,10 @@
   <template>
     <div class="portfolio-display">
       <div class="field">
-        <h2>{{portfolio.name}}</h2>
+        <h2>[[portfolio.name]]</h2>
       </div>
       <div class="field">
-        <h3>{{portfolio.description}}</h3>
+        <h3>[[portfolio.description]]</h3>
       </div>
       <div class="field">
         <table>
@@ -31,17 +33,38 @@
             <th class="table-header"><b>Day High</b></th>
             <th class="table-header"><b>Day Low</b></th>
           </tr>
-          <tr template repeat="{{stock in portfolio.stocks}}">
-              <td>{{stock.symbol}}</td>
-              <td>{{stock.name}}</td>
-              <td>{{stock.currentPrice}}</td>
-              <td>{{stock.daysHigh}}</td>
-              <td>{{stock.daysLow}}</td>
-          </tr>
+          <template is="dom-repeat" items="{{portfolio.stocks}}" as="stock">
+              <tr>
+                <td>{{stock.symbol}}</td>
+                <td>{{stock.name}}</td>
+                <td>{{stock.currentPrice}}</td>
+                <td>{{stock.daysHigh}}</td>
+                <td>{{stock.daysLow}}</td>
+              </tr>
+          </template>
         </table>
       </div>
     </div>
   </template>
   <script type="application/javascript">
+  Polymer({
+    is: 'portfolio-element',
+    properties: {
+      portfolio: {
+        type: Object,
+        reflectToAttribute: true,
+        notify: true,
+        observer: '_portfolioChanged'
+      }
+    },
+    _portfolioChanged: function() {
+      var that = this;
+      that.portfolio.update(function(index) {
+        if(index == that.portfolio.stocks.length - 1) {
+          that.notifyPath('portfolio.stocks', that.portfolio.stocks.slice());
+        }
+      });
+    }
+  });
   </script>
 </dom-module>
